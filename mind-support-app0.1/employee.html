@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>员工工作台 - 心智障碍群体就业支持</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .employee-header {
+      text-align: center;
+      padding: 16px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .employee-header .greeting {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .employee-header .date-info {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .level-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 4px 14px;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .main-nav {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    .nav-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 36px 20px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: var(--text-primary);
+      border: 3px solid transparent;
+      min-height: 200px;
+    }
+
+    .nav-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .nav-card.assessment { border-color: #E6F7FF; }
+    .nav-card.assessment:hover { border-color: var(--primary); background: #F0F9FF; }
+
+    .nav-card.workflow { border-color: #F6FFED; }
+    .nav-card.workflow:hover { border-color: var(--secondary); background: #F0FFF0; }
+
+    .nav-card.communication { border-color: #FFF7E6; }
+    .nav-card.communication:hover { border-color: var(--warning); background: #FFFCF0; }
+
+    .nav-card.training { border-color: #F9F0FF; }
+    .nav-card.training:hover { border-color: #722ED1; background: #F8F0FF; }
+
+    .nav-card .nav-icon {
+      font-size: 4rem;
+      margin-bottom: 12px;
+    }
+
+    .nav-card .nav-label {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .nav-card .nav-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* ---- 子页面容器 ---- */
+    .sub-page {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .sub-page.active {
+      display: block;
+    }
+
+    .sub-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .sub-header .back-btn {
+      margin-bottom: 0;
+    }
+
+    .sub-header h2 {
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+
+    /* ---- 员工端评估界面 ---- */
+    .assessment-intro {
+      text-align: center;
+      padding: 32px;
+    }
+
+    .assessment-intro .intro-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+    }
+
+    .assessment-intro h2 {
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .assessment-intro p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      margin-bottom: 24px;
+    }
+
+    .test-type-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .test-type-card {
+      padding: 24px 16px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 3px solid #E8E8E8;
+    }
+
+    .test-type-card:hover {
+      border-color: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .test-type-card .test-icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .test-type-card .test-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* ---- 评估结果页面 ---- */
+    .result-container {
+      text-align: center;
+      padding: 32px;
+    }
+
+    .result-container .result-emoji {
+      font-size: 5rem;
+      margin-bottom: 16px;
+    }
+
+    .result-container h2 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+    }
+
+    .result-container .result-text {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      margin-bottom: 24px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .result-scores {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin: 24px 0;
+    }
+
+    .result-score-item {
+      text-align: center;
+    }
+
+    .result-score-item .score-num {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .result-score-item .score-name {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .result-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    /* ---- 沟通辅助 ---- */
+    .comm-section {
+      margin-bottom: 32px;
+    }
+
+    .comm-section h3 {
+      font-size: 1.2rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .emotion-display {
+      text-align: center;
+      padding: 24px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      min-height: 120px;
+    }
+
+    .emotion-display .current-emotion {
+      font-size: 4rem;
+      margin-bottom: 8px;
+    }
+
+    .emotion-display .emotion-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .need-display {
+      text-align: center;
+      padding: 24px;
+      background: var(--bg-warm);
+      border-radius: var(--radius-md);
+      margin-top: 16px;
+      min-height: 100px;
+    }
+
+    .need-display .current-need {
+      font-size: 3rem;
+      margin-bottom: 8px;
+    }
+
+    .need-display .need-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .send-btn-container {
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    /* ---- 工作流程员工视图 ---- */
+    .workflow-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .workflow-card .workflow-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .workflow-card .workflow-title .wf-icon {
+      font-size: 2rem;
+    }
+
+    .workflow-card .workflow-title h3 {
+      font-size: 1.2rem;
+    }
+
+    .step-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--bg-main);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+      transition: all 0.3s;
+      border-left: 5px solid #E8E8E8;
+    }
+
+    .step-card.current {
+      border-left-color: var(--primary);
+      background: var(--bg-cool);
+      animation: pulse 2s infinite;
+    }
+
+    .step-card.done {
+      border-left-color: var(--success);
+      opacity: 0.6;
+    }
+
+    .step-card .step-num {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-card.done .step-num {
+      background: var(--success);
+    }
+
+    .step-card .step-info {
+      flex: 1;
+    }
+
+    .step-card .step-info .step-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .step-card .step-info .step-hint {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .step-card .step-emoji {
+      font-size: 1.8rem;
+    }
+
+    .step-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    /* ---- 训练员工视图 ---- */
+    .training-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 3px solid transparent;
+    }
+
+    .training-card:hover {
+      border-color: #722ED1;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .training-card .training-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .training-card .training-title .tr-icon {
+      font-size: 2rem;
+    }
+
+    .training-card .training-title h3 {
+      font-size: 1.2rem;
+    }
+
+    .training-card .training-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* ---- 训练进行中界面 ---- */
+    .training-session {
+      text-align: center;
+    }
+
+    .training-session .session-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .training-session .session-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .training-session .step-progress {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .training-visual {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 48px 24px;
+      margin: 24px 0;
+      box-shadow: var(--shadow-md);
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .training-visual .visual-icon {
+      font-size: 6rem;
+      margin-bottom: 16px;
+    }
+
+    .training-visual .visual-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .training-visual .visual-hint {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 400px;
+    }
+
+    .training-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .main-nav {
+        grid-template-columns: 1fr;
+      }
+
+      .test-type-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .result-scores {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .result-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- ===== 主页面 ===== -->
+    <div id="mainPage" class="sub-page active">
+      <div class="employee-header">
+        <div class="greeting">👋 你好！</div>
+        <div class="date-info" id="dateInfo"></div>
+        <div id="levelBadge" class="level-indicator level-mid">⭐ 中级</div>
+      </div>
+
+      <div class="main-nav">
+        <div class="nav-card assessment" onclick="showPage('assessmentPage')">
+          <span class="nav-icon">📋</span>
+          <div class="nav-label">状态评估</div>
+          <div class="nav-desc">了解你的能力水平</div>
+        </div>
+
+        <div class="nav-card workflow" onclick="showPage('workflowPage')">
+          <span class="nav-icon">📦</span>
+          <div class="nav-label">工作流程</div>
+          <div class="nav-desc">查看今天的工作步骤</div>
+        </div>
+
+        <div class="nav-card communication" onclick="showPage('commPage')">
+          <span class="nav-icon">💬</span>
+          <div class="nav-label">沟通辅助</div>
+          <div class="nav-desc">表达你的感受和需求</div>
+        </div>
+
+        <div class="nav-card training" onclick="showPage('trainingPage')">
+          <span class="nav-icon">🎯</span>
+          <div class="nav-label">岗位训练</div>
+          <div class="nav-desc">练习工作技能</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 评估页面 ===== -->
+    <div id="assessmentPage" class="sub-page">
+      <div class="sub-header">
+        <button class="back-btn" onclick="showPage('mainPage')">← 返回</button>
+        <h2>📋 状态评估</h2>
+      </div>
+
+      <!-- 评估介绍 -->
+      <div id="assessmentIntro" class="assessment-intro">
+        <div class="intro-icon">🌟</div>
+        <h2>让我们来了解一下你的能力</h2>
+        <p>选择一个测试开始，不用紧张，尽力就好！</p>
+        <div class="test-type-grid">
+          <div class="test-type-card" onclick="startTest('clock')">
+            <div class="test-icon">🕐</div>
+            <div class="test-name">看钟表</div>
+          </div>
+          <div class="test-type-card" onclick="startTest('shape')">
+            <div class="test-icon">🔷</div>
+            <div class="test-name">认图形</div>
+          </div>
+          <div class="test-type-card" onclick="startTest('color')">
+            <div class="test-icon">🎨</div>
+            <div class="test-name">辨颜色</div>
+          </div>
+          <div class="test-type-card" onclick="startTest('count')">
+            <div class="test-icon">🔢</div>
+            <div class="test-name">数一数</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 评估进行中 -->
+      <div id="assessmentTest" class="hidden">
+        <div style="text-align:center; margin-bottom:16px;">
+          <span id="testTitle" style="font-size:1.3rem; font-weight:700; color:var(--primary);"></span>
+        </div>
+        <div class="progress-bar">
+          <div id="testProgress" class="progress-fill" style="width:0%"></div>
+        </div>
+        <div id="testContent" class="assessment-area"></div>
+      </div>
+
+      <!-- 评估结果 -->
+      <div id="assessmentResult" class="hidden result-container">
+        <div class="result-emoji" id="resultEmoji">🎉</div>
+        <h2 id="resultTitle">评估完成！</h2>
+        <p class="result-text" id="resultText"></p>
+        <div class="result-scores" id="resultScores"></div>
+        <div id="resultLevel" style="margin: 16px 0;"></div>
+        <div class="result-buttons">
+          <button class="btn btn-primary" onclick="showPage('mainPage')">🏠 回到首页</button>
+          <button class="btn btn-outline" onclick="resetAssessment()">🔄 重新评估</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 工作流程页面 ===== -->
+    <div id="workflowPage" class="sub-page">
+      <div class="sub-header">
+        <button class="back-btn" onclick="showPage('mainPage')">← 返回</button>
+        <h2>📦 工作流程</h2>
+      </div>
+      <div id="workflowList"></div>
+    </div>
+
+    <!-- ===== 沟通辅助页面 ===== -->
+    <div id="commPage" class="sub-page">
+      <div class="sub-header">
+        <button class="back-btn" onclick="showPage('mainPage')">← 返回</button>
+        <h2>💬 沟通辅助</h2>
+      </div>
+
+      <div class="comm-section">
+        <h3>😊 你现在感觉怎么样？</h3>
+        <div id="emotionGrid" class="emotion-grid"></div>
+        <div id="emotionDisplay" class="emotion-display hidden">
+          <div class="current-emotion" id="currentEmotion"></div>
+          <div class="emotion-text" id="emotionText"></div>
+        </div>
+      </div>
+
+      <div class="comm-section">
+        <h3>🆘 你需要什么？</h3>
+        <div id="needsGrid" class="needs-grid"></div>
+        <div id="needDisplay" class="need-display hidden">
+          <div class="current-need" id="currentNeed"></div>
+          <div class="need-text" id="needText"></div>
+        </div>
+      </div>
+
+      <div class="send-btn-container">
+        <button id="sendCommBtn" class="btn btn-primary btn-large hidden" onclick="sendCommunication()">
+          📤 告诉辅导员
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== 岗位训练页面 ===== -->
+    <div id="trainingPage" class="sub-page">
+      <div class="sub-header">
+        <button class="back-btn" onclick="showPage('mainPage')">← 返回</button>
+        <h2>🎯 岗位训练</h2>
+      </div>
+
+      <div id="trainingList"></div>
+
+      <div id="trainingSession" class="hidden training-session">
+        <div class="session-header">
+          <span class="session-title" id="sessionTitle"></span>
+          <span class="step-progress" id="sessionProgress"></span>
+        </div>
+        <div class="progress-bar">
+          <div id="trainingProgress" class="progress-fill" style="width:0%"></div>
+        </div>
+        <div class="training-visual">
+          <div class="visual-icon" id="visualIcon"></div>
+          <div class="visual-title" id="visualTitle"></div>
+          <div class="visual-hint" id="visualHint"></div>
+        </div>
+        <div class="training-actions">
+          <button class="btn btn-outline" id="prevStepBtn" onclick="trainingPrevStep()">⬅ 上一步</button>
+          <button class="btn btn-primary" id="nextStepBtn" onclick="trainingNextStep()">下一步 ➡</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/assessment.js"></script>
+  <script src="js/workflow.js"></script>
+  <script src="js/communication.js"></script>
+  <script src="js/training.js"></script>
+  <script>
+    // ---- 页面导航 ----
+    function showPage(pageId) {
+      document.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      App.playSound('click');
+    }
+
+    // ---- 初始化 ----
+    function init() {
+      // 显示日期
+      const now = new Date();
+      const days = ['日', '一', '二', '三', '四', '五', '六'];
+      document.getElementById('dateInfo').textContent =
+        `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${days[now.getDay()]}`;
+
+      // 显示等级
+      updateLevelBadge();
+
+      // 初始化评估模块（同步已完成状态）
+      if (typeof Assessment !== 'undefined' && Assessment.init) {
+        Assessment.init();
+      }
+
+      // 初始化各模块
+      initWorkflow();
+      initCommunication();
+      initTraining();
+
+      // 初始化评估页面UI（显示锁定/完成状态）
+      if (typeof Assessment !== 'undefined' && Assessment.updateIntroUI) {
+        Assessment.updateIntroUI();
+      }
+    }
+
+    function updateLevelBadge() {
+      const level = App.getUserLevel();
+      const badge = document.getElementById('levelBadge');
+      const icons = { low: '🌱', medium: '⭐', high: '🏆' };
+      badge.className = `level-indicator level-${level.id === 'medium' ? 'mid' : level.id}`;
+      badge.textContent = `${icons[level.id]} ${level.name}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

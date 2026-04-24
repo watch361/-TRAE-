@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>心智障碍群体就业支持系统</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .role-selection {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .app-logo {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .app-logo .logo-icon {
+      font-size: 5rem;
+      display: block;
+      margin-bottom: 16px;
+      animation: bounce 2s infinite;
+    }
+
+    .app-logo h1 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .app-logo .tagline {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 400px;
+    }
+
+    .role-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .role-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 32px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: var(--text-primary);
+      border: 3px solid transparent;
+    }
+
+    .role-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .role-card.employee:hover {
+      border-color: var(--primary);
+    }
+
+    .role-card.admin:hover {
+      border-color: var(--secondary);
+    }
+
+    .role-card .role-icon {
+      font-size: 4.5rem;
+      margin-bottom: 20px;
+    }
+
+    .role-card .role-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .role-card .role-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .footer-info {
+      margin-top: 48px;
+      text-align: center;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .supported-types {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 16px;
+      max-width: 600px;
+    }
+
+    .type-tag {
+      padding: 6px 14px;
+      background: var(--bg-cool);
+      color: var(--primary);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+      .role-cards {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+      }
+
+      .app-logo h1 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="role-selection">
+    <div class="app-logo">
+      <span class="logo-icon">🤝</span>
+      <h1>心智障碍群体就业支持系统</h1>
+      <p class="tagline">让每一个人都能找到适合自己的工作，获得尊重与价值</p>
+      <div class="supported-types">
+        <span class="type-tag">孤独症谱系障碍</span>
+        <span class="type-tag">智力发育迟缓</span>
+        <span class="type-tag">唐氏综合征</span>
+        <span class="type-tag">脑瘫伴随智力障碍</span>
+      </div>
+    </div>
+
+    <div class="role-cards">
+      <a href="employee.html" class="role-card employee">
+        <span class="role-icon">👨‍🔧</span>
+        <div class="role-title">员工入口</div>
+      </a>
+
+      <a href="admin.html" class="role-card admin">
+        <span class="role-icon">🛡️</span>
+        <div class="role-title">管理员入口</div>
+      </a>
+    </div>
+
+    <div class="footer-info">
+      <p>💡 本系统旨在帮助心智障碍群体更好地适应工作环境</p>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

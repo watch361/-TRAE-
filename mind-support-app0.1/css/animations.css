@@ -1,0 +1,291 @@
+/* ============================================
+   工作步骤动画 - 简单可爱的CSS关键帧动画
+   ============================================ */
+
+/* ---- 动画场景容器 ---- */
+.anim-scene {
+  width: 100%;
+  max-width: 400px;
+  height: 220px;
+  margin: 0 auto;
+  position: relative;
+  background: linear-gradient(180deg, #E6F7FF 0%, #F0F5FF 60%, #D9F0D9 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+/* 地面 */
+.anim-ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: linear-gradient(180deg, #C8E6C9, #A5D6A7);
+  border-radius: 0 0 20px 20px;
+}
+
+.anim-ground::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #81C784;
+}
+
+/* 桌子 */
+.anim-table {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  height: 12px;
+  background: #8D6E63;
+  border-radius: 6px;
+  box-shadow: 0 4px 0 #6D4C41;
+}
+
+/* ---- 通用动画元素 ---- */
+.anim-item {
+  position: absolute;
+  font-size: 2.5rem;
+  line-height: 1;
+  transition: all 0.6s ease;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+/* ---- 人物（小工人） ---- */
+.anim-person {
+  position: absolute;
+  bottom: 62px;
+  font-size: 3rem;
+  transition: all 0.8s ease;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+/* ---- 走路动画 ---- */
+@keyframes walkRight {
+  0% { left: 10%; }
+  100% { left: 40%; }
+}
+
+@keyframes walkBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.anim-walk {
+  animation: walkRight 2s ease forwards, walkBounce 0.4s ease infinite;
+}
+
+/* ---- 拿取动作 ---- */
+@keyframes reachDown {
+  0% { transform: translateY(0) rotate(0deg); }
+  40% { transform: translateY(20px) rotate(10deg); }
+  70% { transform: translateY(20px) rotate(10deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+.anim-reach {
+  animation: reachDown 1.5s ease infinite;
+}
+
+/* ---- 放入动作 ---- */
+@keyframes placeDown {
+  0% { transform: translateY(-40px); opacity: 0; }
+  30% { transform: translateY(-40px); opacity: 1; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.anim-place {
+  animation: placeDown 1.2s ease infinite;
+}
+
+/* ---- 检查动作（左右看） ---- */
+@keyframes lookAround {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+
+.anim-look {
+  animation: lookAround 1.5s ease infinite;
+}
+
+/* ---- 封口/按压动作 ---- */
+@keyframes pressDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
+
+.anim-press {
+  animation: pressDown 0.8s ease infinite;
+}
+
+/* ---- 欢呼/完成动作 ---- */
+@keyframes celebrate {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-15px) rotate(-5deg); }
+  75% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.anim-celebrate {
+  animation: celebrate 0.8s ease infinite;
+}
+
+/* ---- 星星/闪光 ---- */
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+}
+
+.anim-sparkle {
+  position: absolute;
+  font-size: 1.2rem;
+  animation: sparkle 1s ease infinite;
+}
+
+/* ---- 手部/手套 ---- */
+@keyframes handMove {
+  0%, 100% { transform: translate(0, 0); }
+  30% { transform: translate(15px, -10px); }
+  60% { transform: translate(30px, 5px); }
+}
+
+.anim-hand {
+  animation: handMove 2s ease infinite;
+}
+
+/* ---- 传送带滚动 ---- */
+@keyframes conveyorMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 0; }
+}
+
+.anim-conveyor {
+  position: absolute;
+  bottom: 50px;
+  left: 5%;
+  right: 5%;
+  height: 16px;
+  background: repeating-linear-gradient(
+    90deg,
+    #78909C 0px,
+    #78909C 20px,
+    #607D8B 20px,
+    #607D8B 40px
+  );
+  background-size: 40px 16px;
+  border-radius: 8px;
+  animation: conveyorMove 1s linear infinite;
+  box-shadow: 0 3px 0 #455A64;
+}
+
+/* ---- 物品在传送带上移动 ---- */
+@keyframes conveyorItem {
+  0% { left: -10%; }
+  100% { left: 85%; }
+}
+
+.anim-conveyor-item {
+  animation: conveyorItem 3s linear infinite;
+}
+
+/* ---- 洗手水滴 ---- */
+@keyframes waterDrop {
+  0% { transform: translateY(-20px); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(40px); opacity: 0; }
+}
+
+.anim-water {
+  position: absolute;
+  font-size: 1rem;
+  animation: waterDrop 1s ease infinite;
+}
+
+/* ---- 摇晃/检查 ---- */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+.anim-shake {
+  animation: shake 0.6s ease infinite;
+}
+
+/* ---- 脉冲提示 ---- */
+@keyframes animPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
+}
+
+.anim-pulse {
+  animation: animPulse 1.5s ease infinite;
+}
+
+/* ---- 箭头指引 ---- */
+@keyframes arrowBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.anim-arrow {
+  position: absolute;
+  font-size: 1.5rem;
+  animation: arrowBounce 0.8s ease infinite;
+}
+
+/* ---- 渐入 ---- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.anim-fadein {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* ---- 旋转 ---- */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.anim-spin {
+  animation: spin 2s linear infinite;
+}
+
+/* ---- 浮动 ---- */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.anim-float {
+  animation: float 2s ease infinite;
+}
+
+/* ---- 标签提示 ---- */
+.anim-label {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.9);
+  padding: 6px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  animation: fadeInUp 0.5s ease;
+}
