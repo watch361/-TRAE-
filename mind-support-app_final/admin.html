@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理后台 - 心智障碍群体就业支持</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .admin-header .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--primary);
+    }
+
+    .admin-header .brand-icon {
+      font-size: 1.8rem;
+    }
+
+    .admin-header .brand-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .admin-header .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* ---- 统计卡片 ---- */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+    }
+
+    .stat-card .stat-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-card .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ---- Tab面板 ---- */
+    .admin-tabs {
+      display: flex;
+      gap: 4px;
+      background: #F0F0F0;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 24px;
+    }
+
+    .admin-tab {
+      flex: 1;
+      padding: 12px 16px;
+      text-align: center;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      border: none;
+      background: transparent;
+      font-size: 1rem;
+    }
+
+    .admin-tab.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .admin-tab:hover:not(.active) {
+      color: var(--text-primary);
+    }
+
+    /* ---- 面板内容 ---- */
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* ---- 员工管理 ---- */
+    .employee-list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .employee-list-header h3 {
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+
+    .add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .add-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* ---- 评估管理 ---- */
+    .assessment-config {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .assessment-config h3 {
+      font-size: 1.2rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .config-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #F0F0F0;
+    }
+
+    .config-item:last-child {
+      border-bottom: none;
+    }
+
+    .config-item .config-label {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .config-item .config-value {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .config-item select,
+    .config-item input {
+      padding: 8px 12px;
+      border: 2px solid #E0E0E0;
+      border-radius: 6px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .config-item select:focus,
+    .config-item input:focus {
+      border-color: var(--primary);
+    }
+
+    /* ---- 工作流程配置 ---- */
+    .workflow-config {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .workflow-config h3 {
+      font-size: 1.2rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    .workflow-step-config {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg-main);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+    }
+
+    .workflow-step-config .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .workflow-step-config input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 2px solid #E0E0E0;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+
+    .workflow-step-config .remove-step {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: var(--danger);
+      color: white;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .add-step-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border: 2px dashed #CCC;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+
+    .add-step-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* ---- 等级标准 ---- */
+    .level-standard {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .level-standard h3 {
+      font-size: 1.2rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    .level-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+    }
+
+    .level-row.low { background: #FFF1F0; }
+    .level-row.mid { background: #FFFBE6; }
+    .level-row.high { background: #F6FFED; }
+
+    .level-row .level-icon {
+      font-size: 2rem;
+    }
+
+    .level-row .level-info {
+      flex: 1;
+    }
+
+    .level-row .level-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .level-row .level-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .level-row .level-score {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .level-row .level-features {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .level-row .feature-tag {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      background: rgba(0,0,0,0.06);
+    }
+
+    /* ---- 历史记录 ---- */
+    .history-list {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border-bottom: 1px solid #F0F0F0;
+      transition: background 0.2s;
+    }
+
+    .history-item:hover {
+      background: #FAFAFA;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-item .history-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-cool);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .history-item .history-info {
+      flex: 1;
+    }
+
+    .history-item .history-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .history-item .history-detail {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .history-item .history-time {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    /* ---- 模态框增强 ---- */
+    .modal-form {
+      text-align: left;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid #E0E0E0;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .admin-header {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .admin-tabs {
+        flex-wrap: wrap;
+      }
+
+      .admin-tab {
+        flex: none;
+        padding: 8px 14px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 头部 -->
+    <div class="admin-header">
+      <a href="index.html" class="brand">
+        <span class="brand-icon">🛡️</span>
+        <span class="brand-text">管理后台</span>
+      </a>
+      <div class="header-actions">
+        <button class="btn btn-outline" onclick="window.open('employee.html')">👁️ 预览员工端</button>
+        <a href="index.html" class="btn btn-outline">🚪 退出</a>
+      </div>
+    </div>
+
+    <!-- 统计概览 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value" id="statTotal">3</div>
+        <div class="stat-label">员工总数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🌱</div>
+        <div class="stat-value" id="statLow">1</div>
+        <div class="stat-label">基础级</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-value" id="statMid">1</div>
+        <div class="stat-label">中级</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-value" id="statHigh">1</div>
+        <div class="stat-label">高级</div>
+      </div>
+    </div>
+
+    <!-- Tab导航 -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('employees', this)">👥 员工管理</button>
+      <button class="admin-tab" onclick="switchTab('assessment', this)">📋 评估管理</button>
+      <button class="admin-tab" onclick="switchTab('workflows', this)">📦 流程配置</button>
+      <button class="admin-tab" onclick="switchTab('levels', this)">📊 等级标准</button>
+      <button class="admin-tab" onclick="switchTab('history', this)">📝 历史记录</button>
+    </div>
+
+    <!-- ===== 员工管理面板 ===== -->
+    <div id="tab-employees" class="tab-panel active">
+      <div class="employee-list-header">
+        <h3>员工列表</h3>
+        <button class="add-btn" onclick="showAddEmployeeModal()">➕ 添加员工</button>
+      </div>
+      <div class="history-list" id="employeeTable"></div>
+    </div>
+
+    <!-- ===== 评估管理面板 ===== -->
+    <div id="tab-assessment" class="tab-panel">
+      <div class="assessment-config">
+        <h3>📋 评估项目配置</h3>
+        <div class="config-item">
+          <span class="config-label">🕐 时钟识别</span>
+          <div class="config-value">
+            <span>题目数</span>
+            <select id="clockCount">
+              <option value="3">3题</option>
+              <option value="5" selected>5题</option>
+              <option value="8">8题</option>
+            </select>
+          </div>
+        </div>
+        <div class="config-item">
+          <span class="config-label">🔷 图形识别</span>
+          <div class="config-value">
+            <span>题目数</span>
+            <select id="shapeCount">
+              <option value="3">3题</option>
+              <option value="4" selected>4题</option>
+              <option value="6">6题</option>
+            </select>
+          </div>
+        </div>
+        <div class="config-item">
+          <span class="config-label">🎨 颜色识别</span>
+          <div class="config-value">
+            <span>题目数</span>
+            <select id="colorCount">
+              <option value="3">3题</option>
+              <option value="4" selected>4题</option>
+              <option value="6">6题</option>
+            </select>
+          </div>
+        </div>
+        <div class="config-item">
+          <span class="config-label">🔢 计数能力</span>
+          <div class="config-value">
+            <span>题目数</span>
+            <select id="countCount">
+              <option value="3">3题</option>
+              <option value="4" selected>4题</option>
+              <option value="6">6题</option>
+            </select>
+          </div>
+        </div>
+        <div class="config-item">
+          <span class="config-label">📊 等级划分标准</span>
+          <div class="config-value">
+            <span>基础级 ≤</span>
+            <input type="number" id="lowThreshold" value="49" style="width:60px;">
+            <span>分</span>
+            <span style="margin-left:8px;">高级 ≥</span>
+            <input type="number" id="highThreshold" value="80" style="width:60px;">
+            <span>分</span>
+          </div>
+        </div>
+        <div style="margin-top:16px; text-align:right;">
+          <button class="btn btn-primary" onclick="saveAssessmentConfig()">💾 保存配置</button>
+        </div>
+      </div>
+
+      <div class="assessment-config">
+        <h3>🧪 快速测试评估</h3>
+        <p style="color:var(--text-secondary); margin-bottom:16px;">管理员可以预览评估测试内容</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="previewTest('clock')">🕐 预览时钟测试</button>
+          <button class="btn btn-outline" onclick="previewTest('shape')">🔷 预览图形测试</button>
+          <button class="btn btn-outline" onclick="previewTest('color')">🎨 预览颜色测试</button>
+          <button class="btn btn-outline" onclick="previewTest('count')">🔢 预览计数测试</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 流程配置面板 ===== -->
+    <div id="tab-workflows" class="tab-panel">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <h3 style="font-size:1.2rem; color:var(--primary);">📦 工作流程与岗位训练预览</h3>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span style="font-size:0.95rem; color:var(--text-secondary); font-weight:600;">切换等级查看：</span>
+          <button class="btn btn-outline level-switch-btn active-level" onclick="switchPreviewLevel('low', this)" style="padding:8px 18px; font-size:0.95rem;">🌱 基础级</button>
+          <button class="btn btn-outline level-switch-btn" onclick="switchPreviewLevel('medium', this)" style="padding:8px 18px; font-size:0.95rem;">⭐ 中级</button>
+          <button class="btn btn-outline level-switch-btn" onclick="switchPreviewLevel('high', this)" style="padding:8px 18px; font-size:0.95rem;">🏆 高级</button>
+        </div>
+      </div>
+      <div id="levelPreviewNote" style="padding:12px 16px; background:var(--bg-warm); border-radius:12px; margin-bottom:20px; font-size:0.95rem; color:var(--text-secondary);">
+        💡 当前预览：<strong>🌱 基础级</strong> — 步骤最详细，每一步都有具体指导，适合需要大量支持的员工
+      </div>
+      <div id="workflowConfigs"></div>
+      <div id="trainingPreview" style="margin-top:24px;"></div>
+    </div>
+
+    <!-- ===== 等级标准面板 ===== -->
+    <div id="tab-levels" class="tab-panel">
+      <div class="level-standard">
+        <h3>📊 等级划分标准（参考国标）</h3>
+        <div class="level-row low">
+          <span class="level-icon">🌱</span>
+          <div class="level-info">
+            <div class="level-name">基础级 (0-40分)</div>
+            <div class="level-desc">基础认知弱、指令只能单步、注意力短</div>
+            <div class="level-features">
+              <span class="feature-tag">大图标界面</span>
+              <span class="feature-tag">语音提示</span>
+              <span class="feature-tag">单步骤任务</span>
+              <span class="feature-tag">频繁提醒</span>
+            </div>
+          </div>
+          <div class="level-score">0-40分</div>
+        </div>
+        <div class="level-row mid">
+          <span class="level-icon">⭐</span>
+          <div class="level-info">
+            <div class="level-name">中级 (41-70分)</div>
+            <div class="level-desc">能理解2步指令、会简单操作、情绪较稳定</div>
+            <div class="level-features">
+              <span class="feature-tag">中等图标</span>
+              <span class="feature-tag">文字+图标</span>
+              <span class="feature-tag">2-3步骤任务</span>
+              <span class="feature-tag">定时提醒</span>
+            </div>
+          </div>
+          <div class="level-score">41-70分</div>
+        </div>
+        <div class="level-row high">
+          <span class="level-icon">🏆</span>
+          <div class="level-info">
+            <div class="level-name">高级 (71-100分)</div>
+            <div class="level-desc">理解多步骤、注意力好、会表达、适应变化</div>
+            <div class="level-features">
+              <span class="feature-tag">标准界面</span>
+              <span class="feature-tag">文字为主</span>
+              <span class="feature-tag">多步骤任务</span>
+              <span class="feature-tag">自主管理</span>
+            </div>
+          </div>
+          <div class="level-score">71-100分</div>
+        </div>
+      </div>
+
+      <div class="level-standard">
+        <h3>🎯 适配岗位建议</h3>
+        <div class="level-row low">
+          <span class="level-icon">🌱</span>
+          <div class="level-info">
+            <div class="level-name">基础级适配岗位</div>
+            <div class="level-desc">纯单一动作（放料、递物品、简单装箱）</div>
+          </div>
+        </div>
+        <div class="level-row mid">
+          <span class="level-icon">⭐</span>
+          <div class="level-info">
+            <div class="level-name">中级适配岗位</div>
+            <div class="level-desc">2-3步流水线（方便面装袋+封口、贴标+装箱）</div>
+          </div>
+        </div>
+        <div class="level-row high">
+          <span class="level-icon">🏆</span>
+          <div class="level-info">
+            <div class="level-name">高级适配岗位</div>
+            <div class="level-desc">多步骤+简单质检（分拣、点数、分类、检查不良品）</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 历史记录面板 ===== -->
+    <div id="tab-history" class="tab-panel">
+      <div class="employee-list-header">
+        <h3>评估与操作记录</h3>
+        <button class="add-btn" onclick="clearHistory()">🗑️ 清空记录</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/workflow.js"></script>
+  <script src="js/training.js"></script>
+  <script>
+    // ---- 示例员工数据 ----
+    const defaultEmployees = [
+      { id: 1, name: '小明', type: '孤独症谱系障碍', level: 'medium', joinDate: '2025-03-15', avatar: '👦' },
+      { id: 2, name: '小红', type: '唐氏综合征', level: 'low', joinDate: '2025-04-01', avatar: '👧' },
+      { id: 3, name: '小刚', type: '智力发育迟缓', level: 'high', joinDate: '2025-02-20', avatar: '🧑' }
+    ];
+
+    const defaultHistory = [
+      { name: '小明', action: '完成状态评估', detail: '时钟识别 80分 | 图形识别 75分 | 综合等级：中级', time: '2025-04-24 14:30' },
+      { name: '小红', action: '完成岗位训练', detail: '方便面包装训练 - 完成 4/4 步骤', time: '2025-04-24 11:20' },
+      { name: '小刚', action: '发送沟通需求', detail: '情绪：疲劳 | 需求：休息', time: '2025-04-24 10:15' },
+      { name: '小明', action: '完成工作流程', detail: '方便面厂包装流程 - 全部完成', time: '2025-04-23 16:00' },
+      { name: '小红', action: '完成状态评估', detail: '时钟识别 40分 | 图形识别 30分 | 综合等级：基础级', time: '2025-04-23 09:30' }
+    ];
+
+    // ---- 初始化 ----
+    let previewLevel = 'low';
+
+    function init() {
+      renderEmployees();
+      renderWorkflowConfigs();
+      renderHistory();
+      updateStats();
+      renderLevelPreview();
+    }
+
+    // ---- 等级切换预览 ----
+    function switchPreviewLevel(level, btn) {
+      previewLevel = level;
+      document.querySelectorAll('.level-switch-btn').forEach(b => {
+        b.classList.remove('active-level');
+        b.style.background = '';
+        b.style.color = '';
+        b.style.borderColor = '';
+      });
+      btn.classList.add('active-level');
+      btn.style.background = 'var(--primary)';
+      btn.style.color = 'white';
+      btn.style.borderColor = 'var(--primary)';
+
+      const levelInfo = {
+        low: { icon: '🌱', name: '基础级', desc: '步骤最详细，每一步都有具体指导，适合需要大量支持的员工' },
+        medium: { icon: '⭐', name: '中级', desc: '标准步骤分解，适合有一定能力的员工' },
+        high: { icon: '🏆', name: '高级', desc: '步骤精简，适合能独立完成大部分任务的员工' }
+      };
+
+      const info = levelInfo[level];
+      document.getElementById('levelPreviewNote').innerHTML =
+        `💡 当前预览：<strong>${info.icon} ${info.name}</strong> — ${info.desc}`;
+
+      renderLevelPreview();
+      App.playSound('click');
+    }
+
+    // ---- 渲染等级预览内容 ----
+    function renderLevelPreview() {
+      renderWorkflowPreview();
+      renderTrainingPreview();
+    }
+
+    function renderWorkflowPreview() {
+      const container = document.getElementById('workflowConfigs');
+      if (!container) return;
+
+      // 临时设置等级来获取对应流程
+      const origLevel = App.store.get('user_level', 'medium');
+      App.store.set('user_level', previewLevel);
+
+      // 使用 Workflow 模块获取数据（如果可用）
+      let workflows;
+      if (typeof Workflow !== 'undefined' && Workflow.getWorkflowsByLevel) {
+        workflows = Workflow.getWorkflowsByLevel();
+      } else {
+        workflows = getWorkflowsForLevel(previewLevel);
+      }
+
+      App.store.set('user_level', origLevel);
+
+      container.innerHTML = '<h3 style="font-size:1.1rem; color:var(--primary); margin-bottom:16px;">📋 工作流程分解</h3>' +
+        Object.entries(workflows).map(([key, wf]) => `
+          <div class="workflow-config">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <h3 style="margin-bottom:0;">${wf.steps[0]?.icon || '📦'} ${wf.name}</h3>
+              <span style="font-size:0.9rem; color:var(--text-secondary);">共 ${wf.steps.length} 步</span>
+            </div>
+            <p style="color:var(--text-secondary); margin-bottom:12px; font-size:0.95rem;">${wf.description}</p>
+            ${wf.steps.map((step, i) => `
+              <div class="workflow-step-config">
+                <div class="step-num">${i + 1}</div>
+                <div style="flex:1;">
+                  <div style="font-weight:600;">${step.icon} ${step.title}</div>
+                  <div style="font-size:0.85rem; color:var(--text-secondary);">${step.desc}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `).join('');
+    }
+
+    function renderTrainingPreview() {
+      const container = document.getElementById('trainingPreview');
+      if (!container) return;
+
+      const origLevel = App.store.get('user_level', 'medium');
+      App.store.set('user_level', previewLevel);
+
+      let scenes;
+      if (typeof Training !== 'undefined' && Training.getTrainingScenesByLevel) {
+        scenes = Training.getTrainingScenesByLevel();
+      } else {
+        scenes = getTrainingForLevel(previewLevel);
+      }
+
+      App.store.set('user_level', origLevel);
+
+      container.innerHTML = '<h3 style="font-size:1.1rem; color:var(--primary); margin-bottom:16px;">🎯 岗位训练分解</h3>' +
+        Object.entries(scenes).map(([key, scene]) => `
+          <div class="workflow-config">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <h3 style="margin-bottom:0;">${scene.steps[0]?.icon || '🎯'} ${scene.name}</h3>
+              <span style="font-size:0.9rem; color:var(--text-secondary);">共 ${scene.steps.length} 步</span>
+            </div>
+            <p style="color:var(--text-secondary); margin-bottom:12px; font-size:0.95rem;">${scene.description}</p>
+            ${scene.steps.map((step, i) => `
+              <div class="workflow-step-config">
+                <div class="step-num">${i + 1}</div>
+                <div style="flex:1;">
+                  <div style="font-weight:600;">${step.icon} ${step.title}</div>
+                  <div style="font-size:0.85rem; color:var(--text-secondary);">${step.hint}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `).join('');
+    }
+
+    // 备用：管理员端独立获取数据（当 Workflow/Training 模块未加载时）
+    function getWorkflowsForLevel(level) {
+      const data = {
+        'noodle-factory': { name: '方便面厂包装流程' },
+        'assembly-line': { name: '流水线装配流程' }
+      };
+      const steps = {
+        low: {
+          'noodle-factory': [
+            {title:'走到工位',desc:'慢慢走到你的工作位置',icon:'🚶'},
+            {title:'洗手',desc:'用洗手液洗手，擦干净',icon:'🧼'},
+            {title:'戴上手套',desc:'拿出一次性手套戴上',icon:'🧤'},
+            {title:'拿一个包装盒',desc:'从左边拿一个空包装盒',icon:'📦'},
+            {title:'检查包装盒',desc:'看看盒子有没有破损',icon:'👀'},
+            {title:'拿一包方便面',desc:'从右边拿一包方便面',icon:'🍜'},
+            {title:'放入方便面',desc:'把方便面轻轻放进盒子里',icon:'📥'},
+            {title:'拿调料包',desc:'拿一个小调料包',icon:'🧂'},
+            {title:'放入调料包',desc:'把调料包放在方便面旁边',icon:'📥'},
+            {title:'拿封口胶带',desc:'从工具区拿一段胶带',icon:'📎'},
+            {title:'封好盒子',desc:'用胶带把盒子封好',icon:'✂️'},
+            {title:'检查封口',desc:'摸一摸胶带贴好了没有',icon:'✋'},
+            {title:'放到成品区',desc:'把包装好的盒子放到右边',icon:'📋'},
+            {title:'完成一个',desc:'太棒了！再来一个吧',icon:'🎉'}
+          ],
+          'assembly-line': [
+            {title:'走到工位',desc:'慢慢走到你的工作位置',icon:'🚶'},
+            {title:'戴上护具',desc:'戴上手套和护目镜',icon:'🥽'},
+            {title:'看传送带',desc:'等零件传送到你面前',icon:'👀'},
+            {title:'拿住零件',desc:'用一只手轻轻拿住零件',icon:'🤏'},
+            {title:'看零件',desc:'检查零件有没有问题',icon:'🔍'},
+            {title:'对准位置',desc:'把零件对准安装位置',icon:'🎯'},
+            {title:'按下去',desc:'轻轻按下去，听到咔嗒声',icon:'👆'},
+            {title:'检查安装',desc:'轻轻拉一拉，确认装好了',icon:'✋'},
+            {title:'放回传送带',desc:'把装好的产品放回传送带',icon:'📤'},
+            {title:'完成一个',desc:'做得好！等下一个',icon:'🎉'}
+          ]
+        },
+        medium: {
+          'noodle-factory': [
+            {title:'准备材料',desc:'检查包装盒、方便面、调料包、胶带',icon:'📦'},
+            {title:'放入方便面',desc:'将一包方便面放入包装盒',icon:'🍜'},
+            {title:'添加调料包',desc:'放入调料包',icon:'🧂'},
+            {title:'封口',desc:'用胶带封好包装盒',icon:'✂️'},
+            {title:'质量检查',desc:'检查包装是否完好',icon:'✅'},
+            {title:'装箱',desc:'将包装好的产品放入成品箱',icon:'📋'}
+          ],
+          'assembly-line': [
+            {title:'拿取零件',desc:'从传送带上拿取零件',icon:'🔧'},
+            {title:'检查零件',desc:'确认零件完好无损',icon:'👀'},
+            {title:'安装零件',desc:'将零件安装到指定位置',icon:'⚙️'},
+            {title:'确认安装',desc:'检查零件是否安装牢固',icon:'✅'}
+          ]
+        },
+        high: {
+          'noodle-factory': [
+            {title:'包装作业',desc:'完成方便面的装盒、放调料、封口',icon:'📦'},
+            {title:'质检',desc:'检查包装完好性并分类',icon:'✅'},
+            {title:'装箱入库',desc:'按标准数量装箱并放到指定区域',icon:'📋'}
+          ],
+          'assembly-line': [
+            {title:'装配作业',desc:'完成零件的取料、检查、安装',icon:'⚙️'},
+            {title:'自检',desc:'确认安装质量并放回产线',icon:'✅'}
+          ]
+        }
+      };
+      const descs = {
+        low: { 'noodle-factory': '将方便面包装成盒装产品（详细步骤版）', 'assembly-line': '简单的零件装配工作（详细步骤版）' },
+        medium: { 'noodle-factory': '将方便面包装成盒装产品', 'assembly-line': '简单的零件装配工作' },
+        high: { 'noodle-factory': '方便面包装流水线作业', 'assembly-line': '流水线装配作业' }
+      };
+      const result = {};
+      Object.entries(data).forEach(([key, wf]) => {
+        result[key] = { name: wf.name, description: descs[level][key], steps: steps[level][key] };
+      });
+      return result;
+    }
+
+    function getTrainingForLevel(level) {
+      const data = {
+        'noodle-packing': { name: '方便面包装训练' },
+        'sorting': { name: '物品分类训练' }
+      };
+      const steps = {
+        low: {
+          'noodle-packing': [
+            {title:'走到工位',hint:'慢慢走到你的工作位置，不要着急',icon:'🚶'},
+            {title:'洗干净手',hint:'用洗手液洗手，冲干净，用纸巾擦干',icon:'🧼'},
+            {title:'戴手套',hint:'从盒子里拿出一双一次性手套，戴上',icon:'🧤'},
+            {title:'拿包装盒',hint:'从左边的架子上拿一个空包装盒',icon:'📦'},
+            {title:'检查盒子',hint:'看看盒子有没有坏的地方',icon:'👀'},
+            {title:'放方便面',hint:'从右边拿一包方便面，轻轻放进盒子中间',icon:'🍜'},
+            {title:'放调料包',hint:'拿一个小调料包，放在方便面旁边',icon:'🧂'},
+            {title:'拿胶带',hint:'从工具区拿一段封口胶带',icon:'📎'},
+            {title:'贴胶带',hint:'把胶带贴在盒子开口处，按紧',icon:'✂️'},
+            {title:'检查一下',hint:'摸一摸胶带贴好了没有，盒子有没有鼓起来',icon:'✅'},
+            {title:'放好成品',hint:'把包装好的盒子轻轻放到右边的成品区',icon:'📋'}
+          ],
+          'sorting': [
+            {title:'看第一个物品',hint:'拿起第一个物品，仔细看它的颜色',icon:'👀'},
+            {title:'找到对应箱子',hint:'找到和物品一样颜色的箱子',icon:'🔍'},
+            {title:'放进去',hint:'把物品轻轻放进箱子里',icon:'📥'},
+            {title:'看下一个',hint:'拿起下一个物品，看颜色',icon:'👀'},
+            {title:'再找箱子',hint:'找到对应颜色的箱子',icon:'🔍'},
+            {title:'放好',hint:'把物品放进去',icon:'📥'},
+            {title:'检查一遍',hint:'看看每个箱子里的物品颜色对不对',icon:'✅'}
+          ]
+        },
+        medium: {
+          'noodle-packing': [
+            {title:'准备材料',hint:'检查包装盒、方便面、调料包、胶带是否齐全',icon:'📦'},
+            {title:'放方便面',hint:'将一包方便面放入包装盒',icon:'🍜'},
+            {title:'放调料包',hint:'将调料包放在方便面旁边',icon:'🧂'},
+            {title:'封口',hint:'用胶带封好包装盒',icon:'✂️'},
+            {title:'质检',hint:'检查包装是否完好',icon:'✅'},
+            {title:'装箱',hint:'将成品放入成品箱',icon:'📋'}
+          ],
+          'sorting': [
+            {title:'识别颜色',hint:'观察物品的颜色',icon:'🎨'},
+            {title:'分类放置',hint:'将相同颜色的物品放在一起',icon:'📂'},
+            {title:'检查结果',hint:'确认分类是否正确',icon:'✅'}
+          ]
+        },
+        high: {
+          'noodle-packing': [
+            {title:'包装',hint:'完成装盒、放调料、封口',icon:'📦'},
+            {title:'质检装箱',hint:'检查质量并装箱',icon:'✅'}
+          ],
+          'sorting': [
+            {title:'快速分类',hint:'按颜色快速分类所有物品',icon:'📂'},
+            {title:'自检',hint:'确认分类正确',icon:'✅'}
+          ]
+        }
+      };
+      const descs = {
+        low: { 'noodle-packing': '学习如何包装方便面（详细版）', 'sorting': '学习按颜色分类物品（详细版）' },
+        medium: { 'noodle-packing': '学习如何包装方便面', 'sorting': '学习按颜色分类物品' },
+        high: { 'noodle-packing': '方便面包装训练', 'sorting': '物品分类训练' }
+      };
+      const result = {};
+      Object.entries(data).forEach(([key, sc]) => {
+        result[key] = { name: sc.name, description: descs[level][key], steps: steps[level][key] };
+      });
+      return result;
+    }
+
+    // ---- Tab切换 ----
+    function switchTab(tabId, el) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+      App.playSound('click');
+    }
+
+    // ---- 员工管理 ----
+    function getEmployees() {
+      return App.store.get('employees', defaultEmployees);
+    }
+
+    function saveEmployees(employees) {
+      App.store.set('employees', employees);
+      updateStats();
+    }
+
+    function renderEmployees() {
+      const employees = getEmployees();
+      const table = document.getElementById('employeeTable');
+      const levelLabels = { low: '基础级', medium: '中级', high: '高级' };
+      const levelClasses = { low: 'level-low', medium: 'level-mid', high: 'level-high' };
+
+      table.innerHTML = employees.map(emp => `
+        <div class="history-item">
+          <div class="history-avatar">${emp.avatar}</div>
+          <div class="history-info">
+            <div class="history-name">${emp.name}</div>
+            <div class="history-detail">${emp.type}</div>
+          </div>
+          <span class="level-badge ${levelClasses[emp.level]}">${levelLabels[emp.level]}</span>
+          <span style="color:var(--text-light); font-size:0.85rem;">${emp.joinDate}</span>
+          <button class="btn btn-outline" style="padding:6px 14px; font-size:0.85rem;" onclick="editEmployee(${emp.id})">✏️</button>
+          <button class="btn btn-danger" style="padding:6px 14px; font-size:0.85rem;" onclick="deleteEmployee(${emp.id})">🗑️</button>
+        </div>
+      `).join('');
+    }
+
+    function showAddEmployeeModal() {
+      App.showModal({
+        icon: '➕',
+        title: '添加员工',
+        content: `
+          <div class="modal-form">
+            <div class="form-group">
+              <label>姓名</label>
+              <input type="text" id="empName" placeholder="请输入姓名">
+            </div>
+            <div class="form-group">
+              <label>类型</label>
+              <select id="empType">
+                <option value="孤独症谱系障碍">孤独症谱系障碍</option>
+                <option value="智力发育迟缓">智力发育迟缓</option>
+                <option value="唐氏综合征">唐氏综合征</option>
+                <option value="脑瘫伴随智力障碍">脑瘫伴随智力障碍</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>初始等级</label>
+              <select id="empLevel">
+                <option value="low">基础级</option>
+                <option value="medium" selected>中级</option>
+                <option value="high">高级</option>
+              </select>
+            </div>
+          </div>
+        `,
+        buttons: [
+          { text: '取消', type: 'outline' },
+          { text: '✅ 添加', type: 'primary', onClick: addEmployee }
+        ]
+      });
+    }
+
+    function addEmployee() {
+      const name = document.getElementById('empName').value.trim();
+      const type = document.getElementById('empType').value;
+      const level = document.getElementById('empLevel').value;
+
+      if (!name) {
+        App.toast('请输入姓名', 'warning');
+        return;
+      }
+
+      const employees = getEmployees();
+      const avatars = ['👦', '👧', '🧑', '👨', '👩', '🧒'];
+      employees.push({
+        id: Date.now(),
+        name,
+        type,
+        level,
+        joinDate: new Date().toISOString().split('T')[0],
+        avatar: avatars[Math.floor(Math.random() * avatars.length)]
+      });
+
+      saveEmployees(employees);
+      renderEmployees();
+      App.toast('添加成功！', 'success');
+    }
+
+    function editEmployee(id) {
+      const employees = getEmployees();
+      const emp = employees.find(e => e.id === id);
+      if (!emp) return;
+
+      App.showModal({
+        icon: '✏️',
+        title: `编辑 - ${emp.name}`,
+        content: `
+          <div class="modal-form">
+            <div class="form-group">
+              <label>姓名</label>
+              <input type="text" id="editEmpName" value="${emp.name}">
+            </div>
+            <div class="form-group">
+              <label>类型</label>
+              <select id="editEmpType">
+                <option value="孤独症谱系障碍" ${emp.type === '孤独症谱系障碍' ? 'selected' : ''}>孤独症谱系障碍</option>
+                <option value="智力发育迟缓" ${emp.type === '智力发育迟缓' ? 'selected' : ''}>智力发育迟缓</option>
+                <option value="唐氏综合征" ${emp.type === '唐氏综合征' ? 'selected' : ''}>唐氏综合征</option>
+                <option value="脑瘫伴随智力障碍" ${emp.type === '脑瘫伴随智力障碍' ? 'selected' : ''}>脑瘫伴随智力障碍</option>
+                <option value="其他" ${emp.type === '其他' ? 'selected' : ''}>其他</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>等级</label>
+              <select id="editEmpLevel">
+                <option value="low" ${emp.level === 'low' ? 'selected' : ''}>基础级</option>
+                <option value="medium" ${emp.level === 'medium' ? 'selected' : ''}>中级</option>
+                <option value="high" ${emp.level === 'high' ? 'selected' : ''}>高级</option>
+              </select>
+            </div>
+          </div>
+        `,
+        buttons: [
+          { text: '取消', type: 'outline' },
+          { text: '💾 保存', type: 'primary', onClick: () => {
+            emp.name = document.getElementById('editEmpName').value.trim() || emp.name;
+            emp.type = document.getElementById('editEmpType').value;
+            emp.level = document.getElementById('editEmpLevel').value;
+            saveEmployees(employees);
+            renderEmployees();
+            App.toast('保存成功！', 'success');
+          }}
+        ]
+      });
+    }
+
+    function deleteEmployee(id) {
+      App.showModal({
+        icon: '⚠️',
+        title: '确认删除',
+        content: '<p>确定要删除该员工吗？此操作不可撤销。</p>',
+        buttons: [
+          { text: '取消', type: 'outline' },
+          { text: '🗑️ 删除', type: 'danger', onClick: () => {
+            let employees = getEmployees();
+            employees = employees.filter(e => e.id !== id);
+            saveEmployees(employees);
+            renderEmployees();
+            App.toast('已删除', 'success');
+          }}
+        ]
+      });
+    }
+
+    function updateStats() {
+      const employees = getEmployees();
+      document.getElementById('statTotal').textContent = employees.length;
+      document.getElementById('statLow').textContent = employees.filter(e => e.level === 'low').length;
+      document.getElementById('statMid').textContent = employees.filter(e => e.level === 'medium').length;
+      document.getElementById('statHigh').textContent = employees.filter(e => e.level === 'high').length;
+    }
+
+    // ---- 评估配置 ----
+    function saveAssessmentConfig() {
+      const config = {
+        clockCount: parseInt(document.getElementById('clockCount').value),
+        shapeCount: parseInt(document.getElementById('shapeCount').value),
+        colorCount: parseInt(document.getElementById('colorCount').value),
+        countCount: parseInt(document.getElementById('countCount').value),
+        lowThreshold: parseInt(document.getElementById('lowThreshold').value),
+        highThreshold: parseInt(document.getElementById('highThreshold').value)
+      };
+      App.store.set('assessment_config', config);
+      App.toast('配置已保存！', 'success');
+    }
+
+    function previewTest(type) {
+      window.open(`employee.html?preview=${type}`, '_blank');
+    }
+
+    // ---- 工作流程配置 ----
+    function getWorkflowConfigs() {
+      return App.store.get('workflow_configs', [
+        {
+          id: 'noodle-factory',
+          name: '方便面厂包装流程',
+          level: 'medium',
+          steps: ['检查包装材料', '放置方便面', '添加调料包', '封口', '质量检查', '装箱']
+        },
+        {
+          id: 'assembly-line',
+          name: '流水线装配流程',
+          level: 'low',
+          steps: ['拿取零件', '检查零件', '安装零件', '确认安装']
+        }
+      ]);
+    }
+
+    function saveWorkflowConfigs(configs) {
+      App.store.set('workflow_configs', configs);
+    }
+
+    function renderWorkflowConfigs() {
+      const configs = getWorkflowConfigs();
+      const container = document.getElementById('workflowConfigs');
+      const levelLabels = { low: '基础级', medium: '中级', high: '高级' };
+      const levelClasses = { low: 'level-low', medium: 'level-mid', high: 'level-high' };
+      const stepIcons = ['📦', '🍜', '🧂', '✂️', '✅', '📋', '🔧', '👀', '⚙️', '🧹'];
+
+      container.innerHTML = configs.map((wf, idx) => `
+        <div class="workflow-config">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+            <h3 style="margin-bottom:0;">📦 ${wf.name}</h3>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span class="level-badge ${levelClasses[wf.level]}">${levelLabels[wf.level]}</span>
+              <button class="btn btn-danger" style="padding:6px 12px; font-size:0.85rem;" onclick="deleteWorkflow(${idx})">🗑️</button>
+            </div>
+          </div>
+          ${wf.steps.map((step, si) => `
+            <div class="workflow-step-config">
+              <div class="step-num">${si + 1}</div>
+              <input type="text" value="${step}" onchange="updateWorkflowStep(${idx}, ${si}, this.value)">
+              <span style="font-size:1.3rem;">${stepIcons[si % stepIcons.length]}</span>
+              <button class="remove-step" onclick="removeWorkflowStep(${idx}, ${si})">×</button>
+            </div>
+          `).join('')}
+          <button class="add-step-btn" onclick="addWorkflowStep(${idx})">➕ 添加步骤</button>
+        </div>
+      `).join('');
+    }
+
+    function addWorkflow() {
+      const configs = getWorkflowConfigs();
+      configs.push({
+        id: 'wf-' + Date.now(),
+        name: '新工作流程',
+        level: 'medium',
+        steps: ['步骤1', '步骤2']
+      });
+      saveWorkflowConfigs(configs);
+      renderWorkflowConfigs();
+      App.toast('已添加新流程', 'success');
+    }
+
+    function deleteWorkflow(idx) {
+      const configs = getWorkflowConfigs();
+      configs.splice(idx, 1);
+      saveWorkflowConfigs(configs);
+      renderWorkflowConfigs();
+      App.toast('已删除流程', 'success');
+    }
+
+    function addWorkflowStep(wfIdx) {
+      const configs = getWorkflowConfigs();
+      configs[wfIdx].steps.push(`步骤${configs[wfIdx].steps.length + 1}`);
+      saveWorkflowConfigs(configs);
+      renderWorkflowConfigs();
+    }
+
+    function removeWorkflowStep(wfIdx, stepIdx) {
+      const configs = getWorkflowConfigs();
+      configs[wfIdx].steps.splice(stepIdx, 1);
+      saveWorkflowConfigs(configs);
+      renderWorkflowConfigs();
+    }
+
+    function updateWorkflowStep(wfIdx, stepIdx, value) {
+      const configs = getWorkflowConfigs();
+      configs[wfIdx].steps[stepIdx] = value;
+      saveWorkflowConfigs(configs);
+    }
+
+    // ---- 历史记录 ----
+    function getHistory() {
+      return App.store.get('history', defaultHistory);
+    }
+
+    function renderHistory() {
+      const history = getHistory();
+      const container = document.getElementById('historyList');
+
+      if (history.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-light);">暂无记录</div>';
+        return;
+      }
+
+      container.innerHTML = history.map(item => `
+        <div class="history-item">
+          <div class="history-avatar">${item.action.includes('评估') ? '📋' : item.action.includes('训练') ? '🎯' : item.action.includes('沟通') ? '💬' : '📦'}</div>
+          <div class="history-info">
+            <div class="history-name">${item.name} - ${item.action}</div>
+            <div class="history-detail">${item.detail}</div>
+          </div>
+          <span class="history-time">${item.time}</span>
+        </div>
+      `).join('');
+    }
+
+    function clearHistory() {
+      App.showModal({
+        icon: '⚠️',
+        title: '清空记录',
+        content: '<p>确定要清空所有历史记录吗？</p>',
+        buttons: [
+          { text: '取消', type: 'outline' },
+          { text: '🗑️ 清空', type: 'danger', onClick: () => {
+            App.store.set('history', []);
+            renderHistory();
+            App.toast('已清空记录', 'success');
+          }}
+        ]
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
